@@ -118,7 +118,14 @@ class Funx {
 		}
 		out;		
 	}
+
+	macro public static function xreverse<X>( it: ExprOf<Array<X>> ) return macro {
+		var out = $it.copy();
+		out.reverse();
+		out;
+	}
 	
+	// Inplace ultra-dirt macros
 	macro public static function xmapI<X>( it: ExprOf<Array<X>>, f: Expr ) return macro {
 		for (i in 0...$it.length) {
 			var x = $it[i];
@@ -201,6 +208,12 @@ class Funx {
 			}
 			i += 1;
 		}
+		out;
+	}
+	
+	macro public static function xreverseI<X>( it: ExprOf<Array<X>> ) return macro {
+		var out = $it;
+		out.reverse();
 		out;
 	}
 }
