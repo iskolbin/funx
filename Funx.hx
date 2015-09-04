@@ -3,8 +3,39 @@ package ;
 import haxe.macro.Expr;
 
 class Funx {
+	macro public static function xlice<X>( it: ExprOf<Array<X>>, i_: Int, ?n_: Int, ?step_: Int ) {
+		if ( n_ == null && ( step_ == null || step <= 1 ) ) { 
+			return macro {
+				var out = new Array();
+				for ( j in $i_...$it.length ) out[j-$i_] = $it[j];
+				out;
+			}	
+		} else if ( step_ == null || step_ <= 1 ) { 
+			return macro {
+				var out = new Array();
+				for ( j in $i_...$it.length ) out[j-$i_] = $it[j];
+				out;
+			}	
+		} else {
+			return macro {
+				var out = new Array();
+				for ( j in $i_...Std.int($it.length / $step_)) out[j-$i_] = $it[j];
+				out;
+			}
+		}
+	}
 
-	macro public static function xeach<X>( it: ExprOf<Iterable<X>>, f: Expr ) return macro {
+	macro public static function xount<X>( it: ExprOf<Iterable<X>>, f: Expr ) return macro {
+		var count = 0;
+		for ( x in $it ) {
+			if ( x == $f ) {
+				count += 1;
+			}
+		}
+		count;
+	}
+
+	macro public static function xach<X>( it: ExprOf<Iterable<X>>, f: Expr ) return macro {
 		var i = 0;
 		for ( x in $it ) {
 			$f;
@@ -12,7 +43,7 @@ class Funx {
 		}
 	}
 
-	macro public static function kxeach<K,X>( it: ExprOf<Map<K,X>>, f: Expr ) return macro {
+	macro public static function kxach<K,X>( it: ExprOf<Map<K,X>>, f: Expr ) return macro {
 		var i = 0;
 		for ( k in $it.keys() ) {
 			var x = $it[k];
@@ -21,7 +52,7 @@ class Funx {
 		}
 	}
 	
-	macro public static function xsum<X>( it: ExprOf<Iterable<X>>, ?init: ExprOf<X> ) return macro {
+	macro public static function xum<X>( it: ExprOf<Iterable<X>>, ?init: ExprOf<X> ) return macro {
 		var acc = $init;
 		var iter = $it.iterator();
 		if ( acc == null ) acc = iter.next();
@@ -29,7 +60,7 @@ class Funx {
 		acc;
 	}
 
-	macro public static function xfilter<X>( it: ExprOf<Iterable<X>>, p: Expr ) return macro {
+	macro public static function xilter<X>( it: ExprOf<Iterable<X>>, p: Expr ) return macro {
 		var out = new Array();
 		var i = 0;
 		var j = 0;
@@ -40,7 +71,7 @@ class Funx {
 		out;
 	}
 
-	macro public static function kxfilter<K,X>( it: ExprOf<Map<K,X>>, p: Expr ) return macro {
+	macro public static function kxilter<K,X>( it: ExprOf<Map<K,X>>, p: Expr ) return macro {
 		var out = new Map();
 		var i = 0;
 		var j = 0;
@@ -52,7 +83,7 @@ class Funx {
 		out;		
 	}
 	
-	macro public static function kxfold<K,X>( it: ExprOf<Map<K,X>>, f: Expr, init: ExprOf<X> ) return macro {
+	macro public static function kxold<K,X>( it: ExprOf<Map<K,X>>, f: Expr, init: ExprOf<X> ) return macro {
 		var acc = $init;
 		var i = 0;	
 		for (x in $it.keys()) {
@@ -63,7 +94,7 @@ class Funx {
 		acc;	
 	}
 
-	macro public static function xfold<X>( it: ExprOf<Iterable<X>>, f: Expr, init: ExprOf<X> ) return macro {
+	macro public static function xold<X>( it: ExprOf<Iterable<X>>, f: Expr, init: ExprOf<X> ) return macro {
 		var acc = $init;
 		var i = 0;	
 		for (x in $it) {
@@ -73,7 +104,7 @@ class Funx {
 		acc;	
 	}
 
-	macro public static function xmap<X>( it: ExprOf<Iterable<X>>, f: Expr ) return macro {
+	macro public static function xap<X>( it: ExprOf<Iterable<X>>, f: Expr ) return macro {
 		var out = new Array();
 		var i = 0;
 		for (x in $it) {
@@ -83,7 +114,7 @@ class Funx {
 		out;
 	}
 
-	macro public static function kxmap<K,X>( it: ExprOf<Map<K,X>>, f: Expr ) return macro {
+	macro public static function kxap<K,X>( it: ExprOf<Map<K,X>>, f: Expr ) return macro {
 		var out = new Map();
 		var i = 0;
 		for ( k in $it.keys() ) {
@@ -94,7 +125,7 @@ class Funx {
 		out;		
 	}
 
-	macro public static function xmapfilter<X>( it: ExprOf<Iterable<X>>, f: Expr, p: Expr ) return macro {
+	macro public static function xapfilter<X>( it: ExprOf<Iterable<X>>, f: Expr, p: Expr ) return macro {
 		var out = new Array();
 		var i = 0;
 		var j = 0;
@@ -106,7 +137,7 @@ class Funx {
 		out;
 	}
 
-	macro public static function kxmapfilter<K,X>( it: ExprOf<Map<K,X>>, f: Expr, p: Expr ) return macro {
+	macro public static function kxapfilter<K,X>( it: ExprOf<Map<K,X>>, f: Expr, p: Expr ) return macro {
 		var out = new Map();
 		var i = 0;
 		var j = 0;
@@ -119,14 +150,14 @@ class Funx {
 		out;		
 	}
 
-	macro public static function xreverse<X>( it: ExprOf<Array<X>> ) return macro {
+	macro public static function xeverse<X>( it: ExprOf<Array<X>> ) return macro {
 		var out = $it.copy();
 		out.reverse();
 		out;
 	}
 	
 	// Inplace ultra-dirt macros
-	macro public static function xmapI<X>( it: ExprOf<Array<X>>, f: Expr ) return macro {
+	macro public static function xapI<X>( it: ExprOf<Array<X>>, f: Expr ) return macro {
 		for (i in 0...$it.length) {
 			var x = $it[i];
 			$it[i] = $f;
@@ -134,7 +165,7 @@ class Funx {
 		$it;
 	}
 
-	macro public static function kxmapI<K,X>( it: ExprOf<Map<K,X>>, f: Expr ) return macro {
+	macro public static function kxapI<K,X>( it: ExprOf<Map<K,X>>, f: Expr ) return macro {
 		var out = $it;
 		var i = 0;
 		for ( k in out.keys() ) {
@@ -145,7 +176,7 @@ class Funx {
 		out;
 	}
 
-	macro public static function xfilterI<X>( it: ExprOf<Array<X>>, p: Expr ) return macro {
+	macro public static function xilterI<X>( it: ExprOf<Array<X>>, p: Expr ) return macro {
 		var out = $it;
 		var i = 0;
 		var j = 0;
@@ -161,7 +192,7 @@ class Funx {
 		out;
 	}
 
-	macro public static function kxfilterI<K,X>( it: ExprOf<Map<K,X>>, p: Expr ) return macro {
+	macro public static function kxilterI<K,X>( it: ExprOf<Map<K,X>>, p: Expr ) return macro {
 		var out = $it;
 		var i = 0;
 		var j = 0;
@@ -176,7 +207,7 @@ class Funx {
 		out;
 	}
 	
-	macro public static function xmapfilterI<X>( it: ExprOf<Array<X>>, f: Expr, p: Expr ) return macro {
+	macro public static function xapfilterI<X>( it: ExprOf<Array<X>>, f: Expr, p: Expr ) return macro {
 		var out = $it;
 		var i = 0;
 		var j = 0;
@@ -193,7 +224,7 @@ class Funx {
 		out;
 	}
 
-	macro public static function kxmapfilterI<K,X>( it: ExprOf<Map<K,X>>, f: Expr, p: Expr ) return macro {
+	macro public static function kxapfilterI<K,X>( it: ExprOf<Map<K,X>>, f: Expr, p: Expr ) return macro {
 		var out = $it;
 		var i = 0;
 		var j = 0;
@@ -211,7 +242,7 @@ class Funx {
 		out;
 	}
 	
-	macro public static function xreverseI<X>( it: ExprOf<Array<X>> ) return macro {
+	macro public static function xeverseI<X>( it: ExprOf<Array<X>> ) return macro {
 		var out = $it;
 		out.reverse();
 		out;
