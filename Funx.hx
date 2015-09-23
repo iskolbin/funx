@@ -30,11 +30,11 @@ class Funx {
 		item;
 	}
 	
-	macro public static function exists<X>( it: ExprOf<Iterable<X>>, p: ExprOf<Bool> ) return macro {
+	macro public static function exists<X>( it: ExprOf<Iterable<X>>, y: ExprOf<X> ) return macro {
 		var it = $it;
 		var exists = false;
 		for ( x in it ) {
-			if ( $p ) {
+			if ( x == $y ) {
 				exists = true;
 				break;
 			}
@@ -42,6 +42,30 @@ class Funx {
 		exists;
 	}
 
+	macro public static function any<X>( it: ExprOf<Iterable<X>>, p: ExprOf<Bool> ) return macro {
+		var it = $it;
+		var result = false;
+		for ( x in it ) {
+			if ( $p ) {
+				result = true;
+				break;
+			}
+		}
+		result;
+	}
+	
+	macro public static function all<X>( it: ExprOf<Iterable<X>>, p: ExprOf<Bool> ) return macro {
+		var it = $it;
+		var result = true;
+		for ( x in it ) {
+			if ( $p ) {
+				result = false;
+				break;
+			}
+		}
+		result;
+	}
+	
 	macro public static function count<X>( it: ExprOf<Iterable<X>>, p: ExprOf<Bool> ) return macro {
 		var it = $it;
 		var count = 0;

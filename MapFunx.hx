@@ -51,6 +51,36 @@ class MapFunx {
 		acc;	
 	}
 
+	macro public static function all<K,X>( it: ExprOf<Map<K,X>>, p: ExprOf<Bool> ) return macro {
+		var it = $it;
+		var result = true;
+		var i = 0;	
+		for (k in it.keys()) {
+			var x = it[k];
+			if ( $p ) {
+				result = false; 
+				break;
+			}
+			i += 1;
+		}
+		result;	
+	}
+	
+	macro public static function any<K,X>( it: ExprOf<Map<K,X>>, p: ExprOf<Bool> ) return macro {
+		var it = $it;
+		var result = false;
+		var i = 0;	
+		for (k in it.keys()) {
+			var x = it[k];
+			if ( $p ) {
+				result = true; 
+				break;
+			}
+			i += 1;
+		}
+		result;	
+	}
+	
 	macro public static function apply<K,X>( it: ExprOf<Map<K,X>>, f: ExprOf<X> ) return macro {
 		var it = $it;
 		var out = new Map();
