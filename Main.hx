@@ -1,4 +1,4 @@
-using Funx;
+using ArrayFunx;
 
 class Main {
 	public static function main() {

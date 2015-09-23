@@ -21,58 +21,72 @@ class Funx {
 	macro public static function find<X>( it: ExprOf<Iterable<X>>, p: ExprOf<Bool> ) return macro {
 		var it = $it;
 		var item = null;
+		var i = 0;
 		for ( x in it ) {
 			if ( $p ) {
 				item = x;
 				break;
 			}
+			i += 1;
 		}
 		item;
 	}
 	
+	macro public static function empty<X>( it: ExprOf<Iterable<X>> ) return macro {
+		!x.iterator().hasNext();
+	}
+
 	macro public static function exists<X>( it: ExprOf<Iterable<X>>, y: ExprOf<X> ) return macro {
 		var it = $it;
 		var exists = false;
+		var i = 0;
 		for ( x in it ) {
 			if ( x == $y ) {
 				exists = true;
 				break;
 			}
+			i += 1;
 		}
 		exists;
 	}
 
 	macro public static function any<X>( it: ExprOf<Iterable<X>>, p: ExprOf<Bool> ) return macro {
 		var it = $it;
+		var i = 0;
 		var result = false;
 		for ( x in it ) {
 			if ( $p ) {
 				result = true;
 				break;
 			}
+			i += 1;
 		}
 		result;
 	}
 	
 	macro public static function all<X>( it: ExprOf<Iterable<X>>, p: ExprOf<Bool> ) return macro {
 		var it = $it;
+		var i = 0;
 		var result = true;
 		for ( x in it ) {
 			if ( $p ) {
 				result = false;
 				break;
 			}
+			i += 1;
 		}
 		result;
 	}
 	
 	macro public static function count<X>( it: ExprOf<Iterable<X>>, p: ExprOf<Bool> ) return macro {
 		var it = $it;
+		var i = 0;
 		var count = 0;
 		for ( x in it ) {
 			if ( $p ) {
 				count += 1;
 			}
+			i += 1;
 		}
 		count;
 	}
@@ -151,95 +165,6 @@ class Funx {
 			if ( $p ) out.push( $f ); else j += 1;
 			i += 1;
 		}
-		out;
-	}
-
-	macro public static function reversed<X>( it: ExprOf<Array<X>> ) return macro {
-		var out = $it.copy();
-		out.reverse();
-		out;
-	}
-
-	macro public static function sorted<X>( it: ExprOf<Array<X>>, f: ExprOf<Int> ) return macro {
-		var it = $it;
-		var out = it.copy();
-		out.sort( function(x,y) return $f );
-		out; 
-	}
-
-	// Inplace ultra-dirt macros use with great caution
-	macro public static function applyI<X>( it: ExprOf<Array<X>>, f: ExprOf<X> ) return macro {
-		var it = $it;
-		var out = it;
-		for (i in 0...it.length) {
-			var x = out[i];
-			out[i] = $f;
-		}
-		out;
-	}
-
-	macro public static function selectI<X>( it: ExprOf<Array<X>>, p: ExprOf<Bool> ) return macro {
-		var it = $it;
-		var out = it;
-		var i = 0;
-		var j = 0;
-		for ( i in 0...out.length ) {
-			var x = out[i];
-			if ( !($p) ) {
-				j += 1;
-			}	else {
-				out[i-j] = x;
-			}
-		}
-		for ( i in 0...j ) out.pop();
-		out;
-	}
-	
-	macro public static function applyselectI<X>( it: ExprOf<Array<X>>, f: ExprOf<X>, p: ExprOf<Bool> ) return macro {
-		var it = $it;
-		var out = it;
-		var i = 0;
-		var j = 0;
-		for ( i in 0...out.length ) {
-			var x = out[i];
-		 	x = $f;
-			if ( !($p) ) {
-				j += 1;
-			}	else {
-				out[i-j] = x;
-			}
-		}
-		for ( i in 0...j ) out.pop();
-		out;
-	}
-	
-	macro public static function selectapplyI<X>( it: ExprOf<Array<X>>, p: ExprOf<Bool>, f: ExprOf<X> ) return macro {
-		var it = $it;
-		var out = it;
-		var i = 0;
-		var j = 0;
-		for ( i in 0...out.length ) {
-			var x = out[i];
-			if ( !($p) ) {
-				j += 1;
-			}	else {
-				out[i-j] = $f;
-			}
-		}
-		for ( i in 0...j ) out.pop();
-		out;
-	}
-
-	macro public static function reversedI<X>( it: ExprOf<Array<X>> ) return macro {
-		var out = $it;
-		out.reverse();
-		out;
-	}
-	
-	macro public static function sortedI<X>( it: ExprOf<Array<X>>, f: ExprOf<Int> ) return macro {
-		var it = $it;
-		var out = it;
-		out.sort( function(x,y) return $f );
 		out;
 	}
 }
