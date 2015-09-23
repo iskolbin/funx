@@ -39,6 +39,18 @@ class MapFunx {
 		acc;	
 	}
 
+	macro public static function count<K,X>( it: ExprOf<Map<K,X>>, p: ExprOf<Bool> ) return macro {
+		var it = $it;
+		var acc = 0;
+		var i = 0;	
+		for (k in it.keys()) {
+			var x = it[k];
+			if ( $p ) acc += 1;
+			i += 1;
+		}
+		acc;	
+	}
+
 	macro public static function apply<K,X>( it: ExprOf<Map<K,X>>, f: ExprOf<X> ) return macro {
 		var it = $it;
 		var out = new Map();
@@ -60,6 +72,19 @@ class MapFunx {
 			var x = it[k];
 			x = $f;
 			if ( $p ) out[k] = x; else j += 1;
+			i += 1;
+		}
+		out;		
+	}
+	
+	macro public static function selectapply<K,X>( it: ExprOf<Map<K,X>>, p: ExprOf<Bool>, f: ExprOf<X> ) return macro {
+		var it = $it;
+		var out = new Map();
+		var i = 0;
+		var j = 0;
+		for ( k in it.keys() ) {
+			var x = it[k];
+			if ( $p ) out[k] = $f; else j += 1;
 			i += 1;
 		}
 		out;		
@@ -106,6 +131,24 @@ class MapFunx {
 				out.remove( k );
 			} else {
 				out[k] = x;
+			}
+			i += 1;
+		}
+		out;
+	}
+	
+	macro public static function selectapplyI<K,X>( it: ExprOf<Map<K,X>>, p: ExprOf<Bool>, f: ExprOf<X> ) return macro {
+		var it = $it;
+		var out = it;
+		var i = 0;
+		var j = 0;
+		for ( k in out.keys() ) {
+			var x = out[k];
+			if ( !($p) ) {
+				j += 1;
+				out.remove( k );
+			} else {
+				out[k] = $f;
 			}
 			i += 1;
 		}

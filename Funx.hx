@@ -118,6 +118,18 @@ class Funx {
 		out;
 	}
 
+	macro public static function selectapply<X>( it: ExprOf<Iterable<X>>, p: ExprOf<Bool>, f: ExprOf<X> ) return macro {
+		var it = $it;
+		var out = new Array();
+		var i = 0;
+		var j = 0;
+		for (x in it) {
+			if ( $p ) out.push( $f ); else j += 1;
+			i += 1;
+		}
+		out;
+	}
+
 	macro public static function reversed<X>( it: ExprOf<Array<X>> ) return macro {
 		var out = $it.copy();
 		out.reverse();
@@ -177,6 +189,23 @@ class Funx {
 		out;
 	}
 	
+	macro public static function selectapplyI<X>( it: ExprOf<Array<X>>, p: ExprOf<Bool>, f: ExprOf<X> ) return macro {
+		var it = $it;
+		var out = it;
+		var i = 0;
+		var j = 0;
+		for ( i in 0...out.length ) {
+			var x = out[i];
+			if ( !($p) ) {
+				j += 1;
+			}	else {
+				out[i-j] = $f;
+			}
+		}
+		for ( i in 0...j ) out.pop();
+		out;
+	}
+
 	macro public static function reversedI<X>( it: ExprOf<Array<X>> ) return macro {
 		var out = $it;
 		out.reverse();
